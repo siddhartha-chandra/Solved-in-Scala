@@ -1,5 +1,28 @@
 import scala.math._
 
+//Given the following table format:
+//------------------------
+//    a       b       y
+//    1       10      1
+//    11      50      5
+//    51      100     50
+//    101     500     100
+//    501     1000    500
+//    1001    5000    1000
+//    ....
+//    .....
+
+//input: any natural number
+//output: Category: Category of the number
+//        Result: Result of the category
+
+//eg. input:7
+//    output:category -> 0; result -> 1
+//    input:555
+//    output:category -> 4; result -> 500
+//    input:1001
+//    output:category -> 5; result -> 1000
+
 object RangePredictor{
 
   def getCategory(num: Int) = {
