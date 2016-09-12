@@ -1,14 +1,14 @@
-import scala.math._
+import scala.math._                                 // import scala.math._
 
 //Given the following table format:
 //------------------------
 //    a       b       y
 //    1       10      1
 //    11      50      5
-//    51      100     50
-//    101     500     100
-//    501     1000    500
-//    1001    5000    1000
+//    51      100     10
+//    101     500     50
+//    501     1000    100
+//    1001    5000    5000
 //    ....
 //    .....
 
@@ -50,13 +50,23 @@ object RangePredictor {
     else println(s"result -> $res")
   }
 
+  def directOutput(x:Int) = x match {
+    case 0 => -1
+    case _ if x>0 && x<= 10 => 1
+    case _ => val logNum = log10(x.toDouble-1).toInt
+              val res = pow(10, logNum.toDouble).toInt
+              if (x <= 5*res) res/2
+              else res
+  }
+
   def listen(): Unit = {
     println("Input a number to classify or press x to exit: ")
     val input = scala.io.StdIn.readLine()
     input match {
       case "x" => ()
       case _ if input forall Character.isDigit =>
-        getOutput(getCategory)(input.toInt); listen()
+        //getOutput(getCategory)(input.toInt); listen()
+        println(directOutput(input.toInt)); listen()
       case _ => println("Error: Invalid input"); listen()
     }
   }
