@@ -61,8 +61,8 @@ object MineSweeper{
 
       val nums = (0 until c)
       val numsRow = nums.map(_.toString).mkString(" ")
-      val filler = "*"*numsRow.length
-      numsRow + s"\n${filler}\n" + nums.zip(res).map{case (num,row) => row + s" |$num"}.mkString("\n")
+      val filler = "\t\t\t" + "*"*numsRow.length
+      "\t\t\t" + numsRow + s"\n${filler}\n" + nums.zip(res).map{case (num,row) => "\t\t\t" + row + s" |$num"}.mkString("\n")
     }
   }
 
