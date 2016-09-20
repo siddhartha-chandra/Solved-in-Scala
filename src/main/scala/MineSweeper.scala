@@ -15,16 +15,20 @@ object MineSweeper{
 
     def updateValue(x: Int, y:Int):Unit = {
      if (this.displayBoard(x)(y) != '_'){
-       if(!gameLost) println("You already stepped there my friend! Try other places")
+       //if(!gameLost) println("You already stepped there my friend! Try other places")
      } else if (this.boardArray(x)(y) == Tile('X')){
        displayBoard(x)(y) = 'X'
        gameLost = true
      } else {
        val tilesAround = for(i<- x-1 to x+1 if i>=0 && i<r;
             j<- y-1 to y+1 if j>=0 && j<c;
-            if (i,j)!=(x,y) && this.displayBoard(i)(j)=='_') yield (i,j)
+            if (i,j)!=(x,y) && (this.displayBoard(i)(j)=='_' ||
+            this.displayBoard(i)(j)=='X')) yield (i,j)
 
-       if(!gameLost) println(s"tiles around: $tilesAround")
+       if(!gameLost) {
+          println(s"tile opened: ($x,$y)")
+          println(s"tiles around: $tilesAround")
+       }
        val values = tilesAround.map(k=> boardArray(k._1)(k._2).value)
        val res = values.count(_ == 'X')
        unopenedTiles -= 1
