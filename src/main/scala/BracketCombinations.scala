@@ -19,8 +19,7 @@ object BracketCombinations{
                 bracketCombinationsInternal(currN-1, balanceStack, curr+"(", acc)
 
       case _ if balanceStack.nonEmpty=>
-                val newStack = new Stack[Char]
-                balanceStack.foreach(newStack.push(_))
+                val newStack = balanceStack.clone
                 newStack.push('(')
                 balanceStack.pop
                 bracketCombinationsInternal(currN-1, newStack, curr+"(", acc) ++
@@ -28,5 +27,11 @@ object BracketCombinations{
 
      }
   bracketCombinationsInternal(n)
+  }
+
+  def main(args: Array[String]) = {
+    println(s"Enter the number of bracket combinations needed:")
+    val n = scala.io.StdIn.readInt()
+    println(bracketCombinations(n))
   }
 }
