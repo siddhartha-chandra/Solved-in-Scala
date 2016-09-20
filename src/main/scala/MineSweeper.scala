@@ -1,12 +1,10 @@
 import scala.util.Random
 
 object MineSweeper{
-
   case class Tile(value: Char)
-
   case class MineSweeperBoard(r: Int, c:Int, numMines: Int){
 
-    require(numMines <= r*c)
+    require(numMines < r*c)
     val displayBoard = Array.fill[Char](r,c)('_')
     val boardArray = Array.fill[Tile](r,c)(Tile(' '))
     var mineCount = 0
@@ -24,11 +22,6 @@ object MineSweeper{
             j<- y-1 to y+1 if j>=0 && j<c;
             if (i,j)!=(x,y) && (this.displayBoard(i)(j)=='_' ||
             this.displayBoard(i)(j)=='X')) yield (i,j)
-
-       if(!gameLost) {
-          println(s"tile opened: ($x,$y)")
-          println(s"tiles around: $tilesAround")
-       }
        val values = tilesAround.map(k=> boardArray(k._1)(k._2).value)
        val res = values.count(_ == 'X')
        unopenedTiles -= 1
@@ -66,7 +59,10 @@ object MineSweeper{
         }
         else this.displayBoard.map{row=> row.toList.mkString(" ")}
 
-      res.mkString("\n")
+      val nums = (0 until c)
+      val numsRow = nums.map(_.toString).mkString(" ")
+      val filler = "*"*numsRow.length
+      numsRow + s"\n${filler}\n" + nums.zip(res).map{case (num,row) => row + s" |$num"}.mkString("\n")
     }
   }
 
