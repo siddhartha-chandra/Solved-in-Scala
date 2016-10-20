@@ -1,31 +1,36 @@
 import scala.util.Random
 
 object MineSweeper{
-
   case class Tile(value: Char)
-
   case class MineSweeperBoard(r: Int, c:Int, numMines: Int){
 
-    require(numMines <= r*c)
+    require(numMines < r*c)
     val displayBoard = Array.fill[Char](r,c)('_')
     val boardArray = Array.fill[Tile](r,c)(Tile(' '))
     var mineCount = 0
     var unopenedTiles = r*c
     var gameLost = false
 
-    def updateValue(x: Int, y:Int) = {
-     if (this.boardArray(x)(y) == Tile('X')){
+    def updateValue(x: Int, y:Int):Unit = {
+     if (this.displayBoard(x)(y) != '_'){
+       //if(!gameLost) println("You already stepped there my friend! Try other places")
+     } else if (this.boardArray(x)(y) == Tile('X')){
        displayBoard(x)(y) = 'X'
        gameLost = true
      } else {
-       val tilesAround = for(i<- x-1 to x+1 if (i>0 && i<r);
-            j<- y-1 to y+1 if (j>0 && j<c);
-            if i!=x && j!=y) yield (i,j)
-
+       val tilesAround = for(i<- x-1 to x+1 if i>=0 && i<r;
+            j<- y-1 to y+1 if j>=0 && j<c;
+            if (i,j)!=(x,y) && (this.displayBoard(i)(j)=='_' ||
+            this.displayBoard(i)(j)=='X')) yield (i,j)
        val values = tilesAround.map(k=> boardArray(k._1)(k._2).value)
        val res = values.count(_ == 'X')
        unopenedTiles -= 1
        displayBoard(x)(y) = res.toString.head
+       res match {
+         case 0 => //println(s"update tiles: $tilesAround")
+                   tilesAround.foreach{k=> updateValue(k._1, k._2)}
+         case _ => ()
+       }
      }
     }
 
@@ -42,10 +47,22 @@ object MineSweeper{
 
     override def toString = {
       val res =
-        if (gameLost) this.boardArray.map{row=> row.toList.map(_.value).mkString(" ")}
+        if (gameLost) {
+          for(i<- 0 until r;
+              j<- 0 until r;
+              if this.displayBoard(i)(j) == '_')
+          this.updateValue(i,j)
+
+          this.displayBoard.map{row=>
+            row.toList.mkString(" ")
+          }
+        }
         else this.displayBoard.map{row=> row.toList.mkString(" ")}
 
-      res.mkString("\n")
+      val nums = (0 until c)
+      val numsRow = nums.map(_.toString).mkString(" ")
+      val filler = "\t\t\t" + "*"*numsRow.length
+      "\t\t\t" + numsRow + s"\n${filler}\n" + nums.zip(res).map{case (num,row) => "\t\t\t" + row + s" |$num"}.mkString("\n")
     }
   }
 
